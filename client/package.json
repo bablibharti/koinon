@@ -12,7 +12,8 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

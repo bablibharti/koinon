@@ -1,0 +1,48 @@
+<svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <rect width="900" height="420" fill="#ffffff"/>
+
+  <!-- Client Box -->
+  <rect x="40" y="150" width="220" height="120" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="150" y="195" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e3a8a">Client</text>
+  <text x="150" y="220" text-anchor="middle" font-size="13" fill="#1e3a8a">React + TypeScript</text>
+  <text x="150" y="240" text-anchor="middle" font-size="13" fill="#1e3a8a">Monaco Editor + Yjs</text>
+
+  <!-- WebSocket arrow -->
+  <line x1="260" y1="210" x2="360" y2="210" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="360" y1="230" x2="260" y2="230" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="310" y="200" text-anchor="middle" font-size="12" fill="#334155">WebSocket</text>
+  <text x="310" y="250" text-anchor="middle" font-size="12" fill="#334155">(y-websocket)</text>
+
+  <!-- Server Box -->
+  <rect x="360" y="150" width="220" height="120" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="470" y="185" text-anchor="middle" font-size="18" font-weight="bold" fill="#14532d">Server</text>
+  <text x="470" y="210" text-anchor="middle" font-size="13" fill="#14532d">Node.js + Express</text>
+  <text x="470" y="230" text-anchor="middle" font-size="13" fill="#14532d">WebSocket Server</text>
+  <text x="470" y="250" text-anchor="middle" font-size="13" fill="#14532d">(Yjs doc sync)</text>
+
+  <!-- Arrow to DB -->
+  <line x1="580" y1="195" x2="660" y2="195" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="580" y1="245" x2="660" y2="245" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Postgres Box -->
+  <rect x="660" y="120" width="200" height="80" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="760" y="150" text-anchor="middle" font-size="16" font-weight="bold" fill="#78350f">PostgreSQL</text>
+  <text x="760" y="172" text-anchor="middle" font-size="12" fill="#78350f">users, rooms, docs</text>
+
+  <!-- Redis Box -->
+  <rect x="660" y="220" width="200" height="80" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="760" y="250" text-anchor="middle" font-size="16" font-weight="bold" fill="#7f1d1d">Redis</text>
+  <text x="760" y="272" text-anchor="middle" font-size="12" fill="#7f1d1d">presence, pub/sub</text>
+
+  <!-- Auth note -->
+  <rect x="360" y="320" width="220" height="60" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="470" y="345" text-anchor="middle" font-size="14" font-weight="bold" fill="#4c1d95">Auth</text>
+  <text x="470" y="365" text-anchor="middle" font-size="12" fill="#4c1d95">JWT + bcrypt</text>
+  <line x1="470" y1="270" x2="470" y2="320" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#334155"/>
+    </marker>
+  </defs>
+</svg>

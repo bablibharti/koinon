@@ -11,6 +11,10 @@ server/    -> Node.js + Express + WebSocket (y-websocket) + Postgres + Redis
 packages/  -> shared TypeScript types used by both client and server
 ```
 
+## Architecture
+
+![Architecture Diagram](./architecture.svg)
+
 ## Architecture Decision Log
 
 _(Fill this in as you build — each entry is one paragraph: what you chose, what
@@ -19,6 +23,14 @@ you rejected, and why. This becomes your interview cheat-sheet.)_
 - **2026-08-11** — Repo initialized. Monorepo structure chosen (client/server/shared)
   over separate repos so shared TypeScript types stay in sync without publishing
   a package.
+
+- **2026-08-11** — Chose **pnpm** over npm as the package manager. pnpm is 
+  better suited for monorepos/workspaces and is more disk-space efficient 
+  (uses symlinked node_modules instead of duplicating packages across projects).
+
+- **2026-08-11** — Chose **ESLint** over Oxlint for linting. Oxlint is newer 
+  and faster (Rust-based), but ESLint is the industry standard — wider plugin 
+  ecosystem, larger community support, and more familiar in team/interview contexts.
 
 ## Local Setup
 

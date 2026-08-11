@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import Editor, { type  OnMount } from "@monaco-editor/react";
+import Editor, { type OnMount } from "@monaco-editor/react";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { MonacoBinding } from "y-monaco";
@@ -35,11 +35,7 @@ function App() {
     ydocRef.current = ydoc;
 
     // 2. Connect this doc to a WebSocket room (public demo server for now)
-    const provider = new WebsocketProvider(
-      "wss://demos.yjs.dev/ws",
-      roomId, // room name — only clients with same roomId sync together
-      ydoc,
-    );
+    const provider = new WebsocketProvider("ws://localhost:4000", roomId, ydoc);
     providerRef.current = provider;
 
     // 3. Get a shared text type from the doc — this holds the actual code

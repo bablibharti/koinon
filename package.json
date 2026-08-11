@@ -2,11 +2,6 @@
   "name": "collab-editor",
   "private": true,
   "version": "0.1.0",
-  "workspaces": [
-    "client",
-    "server",
-    "packages/*"
-  ],
   "scripts": {
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev"

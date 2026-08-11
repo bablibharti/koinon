@@ -2,8 +2,10 @@
   "name": "collab-editor",
   "private": true,
   "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "dev:client": "npm --prefix client run dev",
-    "dev:server": "npm --prefix server run dev"
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
   }
 }

@@ -35,14 +35,13 @@ router.post(
   requireAuth,
   async (req: AuthRequest, res: Response) => {
     try {
-      const roomId = req.params.id;
+      const roomId = req.params.id as string;
 
       const room = await prisma.room.findUnique({ where: { id: roomId } });
       if (!room) {
         return res.status(404).json({ error: "Room not found" });
       }
 
-      // Check if already a member
       const existingMember = await prisma.roomMember.findUnique({
         where: { userId_roomId: { userId: req.userId!, roomId } },
       });
@@ -73,8 +72,10 @@ router.post(
 // GET ROOM DETAILS + MEMBERS
 router.get("/:id", requireAuth, async (req: AuthRequest, res: Response) => {
   try {
+    const roomId = req.params.id as string;
+
     const room = await prisma.room.findUnique({
-      where: { id: req.params.id },
+      where: { id: roomId },
       include: {
         members: {
           include: { user: { select: { id: true, email: true, name: true } } },

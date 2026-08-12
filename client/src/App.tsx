@@ -4,15 +4,22 @@ import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { MonacoBinding } from "y-monaco";
 import { useEditorStore } from "./store";
+import Auth from "./Auth";
 
 const LANGUAGES = ["javascript", "typescript", "python", "java", "cpp"];
 
 function App() {
-  const { language, theme, roomId, setLanguage, toggleTheme, setRoomId } =
-    useEditorStore();
+  const {
+    language,
+    theme,
+    roomId,
+    token,
+    setLanguage,
+    toggleTheme,
+    setRoomId,
+  } = useEditorStore();
   const [roomInput, setRoomInput] = useState("");
 
-  // Refs to hold Yjs objects so they persist across re-renders
   const ydocRef = useRef<Y.Doc | null>(null);
   const providerRef = useRef<WebsocketProvider | null>(null);
   const bindingRef = useRef<MonacoBinding | null>(null);
@@ -26,32 +33,26 @@ function App() {
     setRoomId(newRoomId);
   };
 
-  // Called by Monaco once the editor instance is ready
   const handleEditorMount: OnMount = (editor) => {
     if (!roomId) return;
 
-    // 1. Create the shared document
     const ydoc = new Y.Doc();
     ydocRef.current = ydoc;
 
-    // 2. Connect this doc to a WebSocket room (public demo server for now)
     const provider = new WebsocketProvider("ws://localhost:4000", roomId, ydoc);
     providerRef.current = provider;
 
-    // 3. Get a shared text type from the doc — this holds the actual code
     const yText = ydoc.getText("monaco");
 
-    // 4. Bind Monaco's editor model to the shared text
     const binding = new MonacoBinding(
       yText,
       editor.getModel()!,
       new Set([editor]),
-      provider.awareness, // handles live cursors/presence
+      provider.awareness,
     );
     bindingRef.current = binding;
   };
 
-  // Cleanup when leaving the room / unmounting
   useEffect(() => {
     return () => {
       bindingRef.current?.destroy();
@@ -60,6 +61,12 @@ function App() {
     };
   }, [roomId]);
 
+  // 1️⃣ Not logged in → show Auth screen
+  if (!token) {
+    return <Auth />;
+  }
+
+  // 2️⃣ Logged in but no room yet → show Join/Create room screen
   if (!roomId) {
     return (
       <div className="h-screen w-screen bg-gray-900 flex items-center justify-center">
@@ -91,6 +98,7 @@ function App() {
     );
   }
 
+  // 3️⃣ Logged in AND in a room → show the editor
   return (
     <div className="h-screen w-screen bg-gray-900 flex flex-col">
       <header className="bg-gray-800 text-white px-4 py-3 flex items-center justify-between">

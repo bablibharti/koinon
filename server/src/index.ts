@@ -6,6 +6,7 @@ import { WebSocketServer } from "ws";
 import { setupWSConnection } from "@y/websocket-server/utils";
 dotenv.config();
 import authRoutes from "./routes/auth";
+import roomRoutes from "./routes/room";
 
 
 const app = express();
@@ -17,6 +18,8 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+
+app.use("/api/rooms", roomRoutes);
 
 // Create a raw HTTP server so both Express (REST) and WebSocket
 // can share the same port

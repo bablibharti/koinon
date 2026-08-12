@@ -3,12 +3,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
-import { setupWSConnection, getYDoc } from "./lib/wsUtils";
+import { setupWSConnection, getYDoc } from "./lib/wsUtils.js";
 import * as Y from "yjs";
-import { loadDocument, saveDocument } from "./lib/documents";
+import { loadDocument, saveDocument } from "./lib/documents.js";
 dotenv.config();
-import authRoutes from "./routes/auth";
-import roomRoutes from "./routes/room";
+import authRoutes from "./routes/auth.js";
+import roomRoutes from "./routes/room.js";
 
 const app = express();
 app.use(cors());

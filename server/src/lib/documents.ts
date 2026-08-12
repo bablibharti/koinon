@@ -1,5 +1,5 @@
 import * as Y from "yjs";
-import { prisma } from "./prisma";
+import { prisma } from "./prisma.js";
 
 // Load a saved document snapshot from DB into a fresh Y.Doc
 export async function loadDocument(roomId: string): Promise<Uint8Array | null> {

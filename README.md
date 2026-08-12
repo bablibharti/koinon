@@ -32,6 +32,15 @@ you rejected, and why. This becomes your interview cheat-sheet.)_
   and faster (Rust-based), but ESLint is the industry standard — wider plugin 
   ecosystem, larger community support, and more familiar in team/interview contexts.
 
+
+  ## Future Improvements
+
+- **Refresh tokens**: Currently using long-lived JWT access tokens (7 days). 
+  In production, I'd split into short-lived access tokens + refresh tokens 
+  stored server-side, so leaked tokens have a smaller window and can be revoked.
+- **Viewer role enforcement**: Role field exists in the schema (owner/editor/viewer), 
+  but read-only enforcement in the editor UI isn't wired up yet.
+
 ## Local Setup
 
 ```bash

@@ -5,6 +5,8 @@ import { createServer } from "http";
 import { WebSocketServer } from "ws";
 import { setupWSConnection } from "@y/websocket-server/utils";
 dotenv.config();
+import authRoutes from "./routes/auth";
+
 
 const app = express();
 app.use(cors());
@@ -13,6 +15,8 @@ app.use(express.json());
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", message: "Koinon server is running" });
 });
+
+app.use("/api/auth", authRoutes);
 
 // Create a raw HTTP server so both Express (REST) and WebSocket
 // can share the same port

@@ -41,6 +41,11 @@ you rejected, and why. This becomes your interview cheat-sheet.)_
 - **Viewer role enforcement**: Role field exists in the schema (owner/editor/viewer), 
   but read-only enforcement in the editor UI isn't wired up yet.
 
+  - **Redis for presence/scaling**: Currently presence (cursors, online status) is 
+  handled in-memory on a single server instance. For horizontal scaling across 
+  multiple server instances, I'd move this to Redis Pub/Sub so all instances 
+  stay in sync instead of each holding its own in-memory state.
+
 ## Local Setup
 
 ```bash

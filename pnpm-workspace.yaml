@@ -2,6 +2,10 @@ packages:
   - "client"
   - "server"
   - "packages/*"
+
+overrides:
+  yjs: "13.6.32"
+
 allowBuilds:
   '@prisma/engines': false
   esbuild: false

@@ -15,15 +15,17 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
-    "@y/websocket-server": "^0.1.5",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "lib0": "^0.2.117",
     "pg": "^8.23.0",
     "ws": "^8.21.3",
+    "y-protocols": "^1.0.7",
     "y-websocket": "^3.1.0",
+    "y-websocket-server": "^1.0.2",
     "yjs": "^13.6.32"
   },
   "devDependencies": {

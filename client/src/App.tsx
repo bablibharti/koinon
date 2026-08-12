@@ -6,6 +6,7 @@ import { MonacoBinding } from "y-monaco";
 import { useEditorStore } from "./store";
 import Auth from "./Auth";
 
+
 const LANGUAGES = ["javascript", "typescript", "python", "java", "cpp"];
 
 function App() {
@@ -24,14 +25,47 @@ function App() {
   const providerRef = useRef<WebsocketProvider | null>(null);
   const bindingRef = useRef<MonacoBinding | null>(null);
 
-  const handleJoinRoom = () => {
-    if (roomInput.trim()) setRoomId(roomInput.trim());
-  };
+const API_URL = import.meta.env.VITE_API_URL;
 
-  const handleCreateRoom = () => {
-    const newRoomId = Math.random().toString(36).substring(2, 8);
-    setRoomId(newRoomId);
-  };
+const handleCreateRoom = async () => {
+  try {
+    const res = await fetch(`${API_URL}/api/rooms`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name: "Untitled Room" }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setRoomId(data.id); // use the real DB room id
+    }
+  } catch (err) {
+    console.error("Failed to create room", err);
+  }
+};
+
+const handleJoinRoom = async () => {
+  if (!roomInput.trim()) return;
+  try {
+    const res = await fetch(`${API_URL}/api/rooms/${roomInput.trim()}/join`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setRoomId(roomInput.trim());
+    } else {
+      alert(data.error || "Could not join room");
+    }
+  } catch (err) {
+    console.error("Failed to join room", err);
+  }
+};
 
   const handleEditorMount: OnMount = (editor) => {
     if (!roomId) return;

@@ -25,6 +25,13 @@ model Room {
   members   RoomMember[]
 }
 
+model Document {
+  id        String   @id @default(uuid())
+  roomId    String   @unique
+  content   Bytes    // Yjs binary snapshot (Y.encodeStateAsUpdate)
+  updatedAt DateTime @updatedAt
+}
+
 model RoomMember {
   id       String   @id @default(uuid())
   role     String   @default("editor") // owner | editor | viewer

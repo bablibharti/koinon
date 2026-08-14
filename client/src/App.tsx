@@ -6,7 +6,6 @@ import { MonacoBinding } from "y-monaco";
 import { useEditorStore } from "./store";
 import Auth from "./Auth";
 
-
 const LANGUAGES = ["javascript", "typescript", "python", "java", "cpp"];
 
 function App() {
@@ -25,47 +24,48 @@ function App() {
   const providerRef = useRef<WebsocketProvider | null>(null);
   const bindingRef = useRef<MonacoBinding | null>(null);
 
-const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
+  const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:4000";
 
-const handleCreateRoom = async () => {
-  try {
-    const res = await fetch(`${API_URL}/api/rooms`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ name: "Untitled Room" }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setRoomId(data.id); // use the real DB room id
+  const handleCreateRoom = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/rooms`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: "Untitled Room" }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setRoomId(data.id);
+      }
+    } catch (err) {
+      console.error("Failed to create room", err);
     }
-  } catch (err) {
-    console.error("Failed to create room", err);
-  }
-};
+  };
 
-const handleJoinRoom = async () => {
-  if (!roomInput.trim()) return;
-  try {
-    const res = await fetch(`${API_URL}/api/rooms/${roomInput.trim()}/join`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setRoomId(roomInput.trim());
-    } else {
-      alert(data.error || "Could not join room");
+  const handleJoinRoom = async () => {
+    if (!roomInput.trim()) return;
+    try {
+      const res = await fetch(`${API_URL}/api/rooms/${roomInput.trim()}/join`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setRoomId(roomInput.trim());
+      } else {
+        alert(data.error || "Could not join room");
+      }
+    } catch (err) {
+      console.error("Failed to join room", err);
     }
-  } catch (err) {
-    console.error("Failed to join room", err);
-  }
-};
+  };
 
   const handleEditorMount: OnMount = (editor) => {
     if (!roomId) return;
@@ -73,7 +73,7 @@ const handleJoinRoom = async () => {
     const ydoc = new Y.Doc();
     ydocRef.current = ydoc;
 
-    const provider = new WebsocketProvider("ws://localhost:4000", roomId, ydoc);
+    const provider = new WebsocketProvider(WS_URL, roomId, ydoc);
     providerRef.current = provider;
 
     const yText = ydoc.getText("monaco");
@@ -95,12 +95,10 @@ const handleJoinRoom = async () => {
     };
   }, [roomId]);
 
-  // 1️⃣ Not logged in → show Auth screen
   if (!token) {
     return <Auth />;
   }
 
-  // 2️⃣ Logged in but no room yet → show Join/Create room screen
   if (!roomId) {
     return (
       <div className="h-screen w-screen bg-gray-900 flex items-center justify-center">
@@ -132,7 +130,6 @@ const handleJoinRoom = async () => {
     );
   }
 
-  // 3️⃣ Logged in AND in a room → show the editor
   return (
     <div className="h-screen w-screen bg-gray-900 flex flex-col">
       <header className="bg-gray-800 text-white px-4 py-3 flex items-center justify-between">

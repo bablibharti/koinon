@@ -1,58 +1,106 @@
-# Collaborative Code Editor (Real-Time, CRDT-based)
+# Koinon — Real-Time Collaborative Code Editor
 
-> Full-stack real-time collaborative code editor. Built to demonstrate distributed
-> state sync, not just CRUD.
+🔗 **[Live Demo](https://koinon-client.vercel.app)** · Real-time collaborative code editor built with Yjs (CRDT), a custom WebSocket sync protocol, and role-based access control.
+
+> Full-stack project built to demonstrate distributed state synchronization — not just CRUD.
+
+> **Note:** The backend runs on Render's free tier and spins down after inactivity. The first request after idle may take 30–50 seconds to wake up.
+
+---
+
+## Features
+
+- Real-time collaborative text editing (Monaco Editor + Yjs CRDT)
+- Custom-built WebSocket sync protocol (no third-party sync server)
+- JWT authentication with bcrypt password hashing
+- Role-based room access (owner / editor)
+- Document persistence with debounced auto-save and crash recovery
+- End-to-end tested with Playwright (simulated multi-user sync)
+
+---
 
 ## Architecture
 
 ```
 client/    -> React + TypeScript + Vite + Monaco Editor + Yjs
-server/    -> Node.js + Express + WebSocket (y-websocket) + Postgres + Redis
+server/    -> Node.js + Express + custom WebSocket sync (yjs + y-protocols) + PostgreSQL (Prisma)
 packages/  -> shared TypeScript types used by both client and server
 ```
 
-## Architecture
-
 ![Architecture Diagram](./architecture.svg)
+
+---
 
 ## Architecture Decision Log
 
-_(Fill this in as you build — each entry is one paragraph: what you chose, what
-you rejected, and why. This becomes your interview cheat-sheet.)_
+- **Monorepo structure** (client/server/shared) over separate repos, so shared TypeScript types stay in sync without publishing a package.
+- **pnpm** over npm — better suited for monorepos/workspaces, more disk-space efficient (symlinked `node_modules` instead of duplicating packages).
+- **ESLint** over Oxlint — Oxlint is newer and faster (Rust-based), but ESLint is the industry standard with a wider plugin ecosystem and broader team/interview familiarity.
+- **Yjs (CRDT)** over Operational Transformation — CRDTs resolve conflicts independently on each client with guaranteed convergence, without needing a central sequencing server. Used by Figma and Linear for the same reason.
+- **Custom WebSocket sync protocol** over `y-websocket-server` — the available server packages had unresolved dependency conflicts between Yjs v13 and v14. Implemented the sync handler directly using `y-protocols` and `lib0`, matching what those packages do internally.
+- **PostgreSQL + Prisma** over MongoDB — the core data (users, rooms, memberships) is relational, with clear foreign keys and joins. A `Bytes` column stores Yjs binary snapshots for persistence, giving relational integrity and flexible blob storage in one database.
 
-- **2026-08-11** — Repo initialized. Monorepo structure chosen (client/server/shared)
-  over separate repos so shared TypeScript types stay in sync without publishing
-  a package.
-
-- **2026-08-11** — Chose **pnpm** over npm as the package manager. pnpm is 
-  better suited for monorepos/workspaces and is more disk-space efficient 
-  (uses symlinked node_modules instead of duplicating packages across projects).
-
-- **2026-08-11** — Chose **ESLint** over Oxlint for linting. Oxlint is newer 
-  and faster (Rust-based), but ESLint is the industry standard — wider plugin 
-  ecosystem, larger community support, and more familiar in team/interview contexts.
-
-
-  ## Future Improvements
-
-- **Refresh tokens**: Currently using long-lived JWT access tokens (7 days). 
-  In production, I'd split into short-lived access tokens + refresh tokens 
-  stored server-side, so leaked tokens have a smaller window and can be revoked.
-- **Viewer role enforcement**: Role field exists in the schema (owner/editor/viewer), 
-  but read-only enforcement in the editor UI isn't wired up yet.
-
-  - **Redis for presence/scaling**: Currently presence (cursors, online status) is 
-  handled in-memory on a single server instance. For horizontal scaling across 
-  multiple server instances, I'd move this to Redis Pub/Sub so all instances 
-  stay in sync instead of each holding its own in-memory state.
+---
 
 ## Local Setup
 
+### Prerequisites
+- Node.js 20+
+- pnpm (`npm install -g pnpm`)
+- Docker Desktop (for local Postgres)
+
+### Steps
+
 ```bash
-npm install
-npm run dev:client   # starts Vite dev server
-npm run dev:server   # starts Express + WebSocket server
+git clone https://github.com/<your-username>/koinon.git
+cd koinon
+docker compose up -d          # starts local Postgres
+pnpm install
+
+cd server
+pnpm exec prisma migrate dev
+pnpm dev                      # runs on http://localhost:4000
+
+# in a separate terminal
+cd client
+pnpm dev                      # runs on http://localhost:5173
 ```
+
+### Environment Variables
+
+`server/.env`
+```
+DATABASE_URL=postgresql://koinon:koinon_dev_password@localhost:<port>/koinon_db
+JWT_SECRET=your-secret-key
+PORT=4000
+```
+
+`client/.env`
+```
+VITE_API_URL=http://localhost:4000
+VITE_WS_URL=ws://localhost:4000
+```
+
+---
+
+## Running Tests
+
+```bash
+cd client
+pnpm exec playwright test
+```
+
+Runs an end-to-end test that simulates two independent users registering, joining the same room, and verifies real-time text synchronization between them.
+
+---
+
+## Future Improvements
+
+- **Refresh tokens** — currently using long-lived JWT access tokens (7 days). In production, I'd split this into short-lived access tokens plus server-stored refresh tokens, so a leaked token has a smaller window and can be revoked.
+- **Viewer role enforcement** — the `role` field (owner/editor/viewer) exists in the schema, but read-only enforcement in the editor UI isn't wired up yet.
+- **Redis for presence/scaling** — presence (cursors, online status) currently lives in memory on a single server instance. For horizontal scaling across multiple instances, this would move to Redis Pub/Sub so all instances stay in sync.
+
+---
 
 ## Roadmap
 
